@@ -1,18 +1,38 @@
-import { useForm } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
-import loginImage from '../assets/image/login.svg';
+import { useEffect } from "react";
+import { useForm } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import loginImage from "../assets/image/login.svg";
+import { loginUser, signInGoogle } from "../redux/features/user/userThunk";
 const Login = () => {
   const { register, handleSubmit } = useForm();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const { isError, error, isLoading, email } = useSelector(
+    (state) => state.userSlice
+  );
+
+  // handling error
+  useEffect(() => {
+    if (isError && error) {
+      toast(error);
+    }
+  }, [isError, error]);
+
+  // handling redirects
+  useEffect(() => {
+    if (!isLoading && email) {
+      navigate("/");
+    }
+  }, [isLoading, email, navigate]);
 
   const onSubmit = ({ email, password }) => {
-    // Email Password Login
-
-    console.log(email, password);
+    dispatch(loginUser({ email, password }));
   };
 
   const handleGoogleLogin = () => {
-    //  Google Login
+    dispatch(signInGoogle());
   };
 
   return (
@@ -30,7 +50,7 @@ const Login = () => {
                 type="email"
                 id="email"
                 className="w-full rounded-md"
-                {...register('email')}
+                {...register("email")}
               />
             </div>
             <div className="flex flex-col items-start">
@@ -39,7 +59,7 @@ const Login = () => {
                 type="password"
                 id="password"
                 className="w-full rounded-md"
-                {...register('password')}
+                {...register("password")}
               />
             </div>
             <div className="relative !mt-8">
@@ -49,10 +69,10 @@ const Login = () => {
             </div>
             <div>
               <p>
-                Don&apos;t have an account?{' '}
+                Don&apos;t have an account?{" "}
                 <span
                   className="text-primary hover:underline cursor-pointer"
-                  onClick={() => navigate('/signup')}
+                  onClick={() => navigate("/signup")}
                 >
                   Sign up
                 </span>

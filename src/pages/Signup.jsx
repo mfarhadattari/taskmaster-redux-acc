@@ -1,21 +1,29 @@
-import { useEffect, useState } from 'react';
-import loginImage from '../assets/image/login.svg';
-import { useForm, useWatch } from 'react-hook-form';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useState } from "react";
+import { useForm, useWatch } from "react-hook-form";
+import { toast } from "react-hot-toast";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import loginImage from "../assets/image/login.svg";
+import { createUser, signInGoogle } from "../redux/features/user/userThunk";
 
 const Signup = () => {
   const { handleSubmit, register, control } = useForm();
-  const password = useWatch({ control, name: 'password' });
-  const confirmPassword = useWatch({ control, name: 'confirmPassword' });
+  const password = useWatch({ control, name: "password" });
+  const confirmPassword = useWatch({ control, name: "confirmPassword" });
   const navigate = useNavigate();
   const [disabled, setDisabled] = useState(true);
+
+  const dispatch = useDispatch();
+  const { isError, error, isLoading, email } = useSelector(
+    (state) => state.userSlice
+  );
 
   useEffect(() => {
     if (
       password !== undefined &&
-      password !== '' &&
+      password !== "" &&
       confirmPassword !== undefined &&
-      confirmPassword !== '' &&
+      confirmPassword !== "" &&
       password === confirmPassword
     ) {
       setDisabled(false);
@@ -24,13 +32,28 @@ const Signup = () => {
     }
   }, [password, confirmPassword]);
 
+  // handling error
+  useEffect(() => {
+    if (isError && error) {
+      toast(error);
+    }
+  }, [isError, error]);
+
+  // handling redirects
+  useEffect(() => {
+    if (!isLoading && email) {
+      navigate("/");
+    }
+  }, [isLoading, email, navigate]);
+
   const onSubmit = ({ name, email, password }) => {
     // Email Password signup
-    console.log(name, email, password);
+    dispatch(createUser({ name, email, password }));
   };
 
   const handleGoogleLogin = () => {
     // Google Login
+    dispatch(signInGoogle());
   };
 
   return (
@@ -48,7 +71,7 @@ const Signup = () => {
                 type="text"
                 id="name"
                 className="w-full rounded-md"
-                {...register('name')}
+                {...register("name")}
               />
             </div>
             <div className="flex flex-col items-start">
@@ -57,7 +80,7 @@ const Signup = () => {
                 type="email"
                 id="email"
                 className="w-full rounded-md"
-                {...register('email')}
+                {...register("email")}
               />
             </div>
             <div className="flex flex-col items-start">
@@ -66,7 +89,7 @@ const Signup = () => {
                 type="password"
                 id="password"
                 className="w-full rounded-md"
-                {...register('password')}
+                {...register("password")}
               />
             </div>
             <div className="flex flex-col items-start">
@@ -75,7 +98,7 @@ const Signup = () => {
                 type="password"
                 id="confirm-password"
                 className="w-full rounded-md"
-                {...register('confirmPassword')}
+                {...register("confirmPassword")}
               />
             </div>
             <div className="!mt-8 ">
@@ -89,10 +112,10 @@ const Signup = () => {
             </div>
             <div>
               <p>
-                Already have an account?{' '}
+                Already have an account?{" "}
                 <span
                   className="text-primary hover:underline cursor-pointer"
-                  onClick={() => navigate('/login')}
+                  onClick={() => navigate("/login")}
                 >
                   Login
                 </span>
