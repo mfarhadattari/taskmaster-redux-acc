@@ -2,7 +2,7 @@ import { ArrowRightIcon, TrashIcon } from "@heroicons/react/24/outline";
 import {
   useDeleteTaskMutation,
   useUpdateTaskStatusMutation,
-} from "../../redux/features/api/baseAPI";
+} from "../../redux/features/tasks/tasksApi";
 
 const TaskCard = ({ task }) => {
   const [setUpdateTask, { data }] = useUpdateTaskStatusMutation();
