@@ -1,18 +1,18 @@
-import { BellIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
-import MyTasks from '../components/tasks/MyTasks';
-import TaskCard from '../components/tasks/TaskCard';
-import AddTaskModal from '../components/tasks/AddTaskModal';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import MenuDropdown from '../components/ui/MenuDropdown';
+import { BellIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import AddTaskModal from "../components/tasks/AddTaskModal";
+import MyTasks from "../components/tasks/MyTasks";
+import TaskCard from "../components/tasks/TaskCard";
+import MenuDropdown from "../components/ui/MenuDropdown";
+import { useGetTasksQuery } from "../redux/features/api/baseAPI";
 
 const Tasks = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const { tasks } = useSelector((state) => state.tasksSlice);
+  const { data: tasks = [] } = useGetTasksQuery();
 
-  const pendingTasks = tasks?.filter((item) => item.status == 'pending');
-  const runningTasks = tasks?.filter((item) => item.status == 'running');
-  const doneTasks = tasks?.filter((item) => item.status == 'done');
+  const pendingTasks = tasks?.filter((item) => item.status == "pending");
+  const runningTasks = tasks?.filter((item) => item.status == "running");
+  const doneTasks = tasks?.filter((item) => item.status == "done");
 
   return (
     <>

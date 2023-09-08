@@ -1,11 +1,11 @@
-import { useForm } from 'react-hook-form';
-import Modal from '../ui/Modal';
-import { useDispatch } from 'react-redux';
-import { addTask } from '../../redux/features/tasks/tasksSlice';
+import { useForm } from "react-hook-form";
+import { useAddTaskMutation } from "../../redux/features/api/baseAPI";
+import Modal from "../ui/Modal";
 
 const AddTaskModal = ({ isOpen, setIsOpen }) => {
   const { register, handleSubmit, reset } = useForm();
-  const dispatch = useDispatch();
+  const [addTask, { data }] = useAddTaskMutation();
+  console.log(data);
 
   const onCancel = () => {
     reset();
@@ -13,7 +13,7 @@ const AddTaskModal = ({ isOpen, setIsOpen }) => {
   };
 
   const onSubmit = (data) => {
-    dispatch(addTask(data));
+    addTask({ ...data, status: "pending" });
     onCancel();
   };
 
@@ -28,7 +28,7 @@ const AddTaskModal = ({ isOpen, setIsOpen }) => {
             className="w-full rounded-md"
             type="text"
             id="title"
-            {...register('title')}
+            {...register("title")}
           />
         </div>
         <div className="flex flex-col mb-5">
@@ -39,7 +39,7 @@ const AddTaskModal = ({ isOpen, setIsOpen }) => {
             className="w-full rounded-md"
             type="text"
             id="description"
-            {...register('description')}
+            {...register("description")}
           />
         </div>
         <div className="flex flex-col mb-5">
@@ -50,7 +50,7 @@ const AddTaskModal = ({ isOpen, setIsOpen }) => {
             className="w-full rounded-md"
             type="date"
             id="date"
-            {...register('date')}
+            {...register("date")}
           />
         </div>
         <div className="flex flex-col mb-5">
@@ -60,7 +60,7 @@ const AddTaskModal = ({ isOpen, setIsOpen }) => {
           <select
             className="w-full rounded-md"
             id="assignedTo"
-            {...register('assignedTo')}
+            {...register("assignedTo")}
           >
             <option value="Mir Hussain">Mir Hussain</option>
             <option value="Mezba Abedin">Mezba Abedin</option>
@@ -84,7 +84,7 @@ const AddTaskModal = ({ isOpen, setIsOpen }) => {
           <select
             className="w-full rounded-md"
             id="priority"
-            {...register('priority')}
+            {...register("priority")}
           >
             <option defaultValue value="high">
               High
